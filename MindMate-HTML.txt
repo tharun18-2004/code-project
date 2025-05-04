@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mind Mate</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f5f5f5;
+    }
+    .page {
+      display: none;
+      padding: 20px;
+    }
+    .active {
+      display: block;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 20px;
+      font-size: 16px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    input {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+    }
+    .mood-btn {
+      padding: 10px;
+      margin: 10px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Page 1: Profile -->
+<div class="page active" id="page1">
+  <h2>Step 1: Profile</h2>
+  <input type="text" id="name" placeholder="Enter your name" required>
+  <input type="number" id="age" placeholder="Enter your age" required>
+  <input type="number" id="weight" placeholder="Enter your weight (kg)" required>
+  <input type="number" id="height" placeholder="Enter your height (cm)" required>
+  <button onclick="goToPage(2)">Next ➡</button>
+</div>
+
+<!-- Page 2: Mood -->
+<div class="page" id="page2">
+  <h2>Step 2: Mood of the Day</h2>
+  <p>Select your mood:</p>
+  <button class="mood-btn" onclick="selectMood('sleepy', '🥴')">🥴 Sleepy</button>
+  <button class="mood-btn" onclick="selectMood('active', '😀')">😀 Active</button>
+  <button class="mood-btn" onclick="selectMood('normal', '😐')">😐 Normal</button>
+  <div class="result" id="moodDisplay"></div>
+  <button onclick="goToPage(3)">Next ➡</button>
+</div>
+
+<!-- Page 3: Goals -->
+<div class="page" id="page3">
+  <h2>Step 3: Daily Goals</h2>
+
+  <h3>🚶 Steps</h3>
+  <input type="number" id="steps" placeholder="Enter steps walked">
+  <div id="stepResult"></div>
+
+  <h3>💧 Water Intake</h3>
+  <input type="number" id="waterInput" placeholder="Enter water drank (ml)">
+  <button onclick="addWater()">Add</button>
+  <div id="waterResult">Total: 0 ml</div>
+
+  <h3>🛌 Sleep</h3>
+  <label>Sleep Time:</label>
+  <input type="time" id="sleepTime">
+  <label>Wake Time:</label>
+  <input type="time" id="wakeTime">
+  <button onclick="calculateSleep()">Calculate Sleep</button>
+  <div id="sleepResult"></div>
+
+  <button onclick="checkGoals()">Next ➡</button>
+</div>
+
+<!-- Page 4: Emergency Contact -->
+<div class="page" id="page4">
+  <h2>Step 4: Emergency Contact</h2>
+  <input type="tel" id="emergencyContact" placeholder="Enter emergency contact number">
+  <button onclick="saveEmergency()">Save Contact</button>
+  <div id="emergencyDisplay"></div>
+</div>
+
+<script>
+  let currentPage = 1;
+  let totalWater = 0;
+
+  function goToPage(pageNum) {
+    document.getElementById(page${currentPage}).classList.remove('active');
+    document.getElementById(page${pageNum}).classList.add('active');
+    currentPage = pageNum;
+  }
+
+  function selectMood(mood, emoji) {
+    document.getElementById('moodDisplay').innerText = You are feeling ${mood.toUpperCase()} ${emoji};
+  }
+
+  function addWater() {
+    const input = parseInt(document.getElementById('waterInput').value);
+    if (!isNaN(input)) {
+      totalWater += input;
+      document.getElementById('waterResult').innerText = Total: ${totalWater} ml;
+    }
+  }
+
+  function calculateSleep() {
+    const sleepTime = document.getElementById('sleepTime').value;
+    const wakeTime = document.getElementById('wakeTime').value;
+    if (sleepTime && wakeTime) {
+      const [sh, sm] = sleepTime.split(':').map(Number);
+      const [wh, wm] = wakeTime.split(':').map(Number);
+      let sleepMinutes = ((wh * 60 + wm) - (sh * 60 + sm));
+      if (sleepMinutes < 0) sleepMinutes += 1440; // if past midnight
+      const hours = (sleepMinutes / 60).toFixed(1);
+      document.getElementById('sleepResult').innerText = You slept ${hours} hours;
+    }
+  }
+
+  function checkGoals() {
+    const steps = parseInt(document.getElementById('steps').value);
+    let stepMsg = steps >= 5000 ? "✅ Step Goal Achieved!" : "❌ Keep walking!";
+    document.getElementById('stepResult').innerText = stepMsg;
+
+    let waterMsg = totalWater >= 3000 ? "✅ Water Goal Met!" : "❌ Drink more water!";
+    document.getElementById('waterResult').innerText += \n${waterMsg};
+
+    goToPage(4);
+  }
+
+  function saveEmergency() {
+    const number = document.getElementById('emergencyContact').value;
+    if (number) {
+      document.getElementById('emergencyDisplay').innerHTML = In case of emergency, contact: <a href="tel:${number}">📞 ${number}</a>;
+    }
+  }
+</script>
+
+</body>
+</html>
