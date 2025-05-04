@@ -1,0 +1,51 @@
+let currentPage = 1;
+let totalWater = 0;
+
+function goToPage(pageNum) {
+  document.getElementById(page${currentPage}).classList.remove('active');
+  document.getElementById(page${pageNum}).classList.add('active');
+  currentPage = pageNum;
+}
+
+function selectMood(mood, emoji) {
+  document.getElementById('moodDisplay').innerText = You are feeling ${mood.toUpperCase()} ${emoji};
+}
+
+function addWater() {
+  const input = parseInt(document.getElementById('waterInput').value);
+  if (!isNaN(input)) {
+    totalWater += input;
+    document.getElementById('waterResult').innerText = Total: ${totalWater} ml;
+  }
+}
+
+function calculateSleep() {
+  const sleepTime = document.getElementById('sleepTime').value;
+  const wakeTime = document.getElementById('wakeTime').value;
+  if (sleepTime && wakeTime) {
+    const [sh, sm] = sleepTime.split(':').map(Number);
+    const [wh, wm] = wakeTime.split(':').map(Number);
+    let sleepMinutes = ((wh * 60 + wm) - (sh * 60 + sm));
+    if (sleepMinutes < 0) sleepMinutes += 1440; // if past midnight
+    const hours = (sleepMinutes / 60).toFixed(1);
+    document.getElementById('sleepResult').innerText = You slept ${hours} hours;
+  }
+}
+
+function checkGoals() {
+  const steps = parseInt(document.getElementById('steps').value);
+  let stepMsg = steps >= 5000 ? "✅ Step Goal Achieved!" : "❌ Keep walking!";
+  document.getElementById('stepResult').innerText = stepMsg;
+
+  let waterMsg = totalWater >= 3000 ? "✅ Water Goal Met!" : "❌ Drink more water!";
+  document.getElementById('waterResult').innerText += \n${waterMsg};
+
+  goToPage(4);
+}
+
+function saveEmergency() {
+  const number = document.getElementById('emergencyContact').value;
+  if (number) {
+    document.getElementById('emergencyDisplay').innerHTML = In case of emergency, contact: <a href="tel:${number}">📞 ${number}</a>;
+  }
+}
